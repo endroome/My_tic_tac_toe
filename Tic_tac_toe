@@ -1,0 +1,138 @@
+cell_data = {index: ' ' for index in range(1, 10)}
+
+class Cell:
+
+"""
+In this class, the cell is checked or replaced with a cross or zeros
+cell_data - Generating cells
+
+
+    def __init__(self):
+        self.row = cell_data
+
+    def is_valid_move(self, position):
+    """
+
+    In this method, the cell is checked
+
+    """
+        if self.row[int(position)] == ' ':
+            return True
+        else:
+            return False
+
+    def change_board(self, position, motion):
+    """
+    In this method, the cell is change
+
+    """
+
+        if self.is_valid_move(position):
+            self.row[int(position)] = motion
+            return self.row
+        return None
+
+    def combination(self, player):
+    """
+
+    In this method a check for a winning combination is being carried out
+
+    """
+
+        if self.row[1] == player and self.row[2] == player and self.row[3] == player or self.row[1] == player and self.row[4] == player and self.row[7] == player or self.row[1] == player and self.row[5] == player and self.row[9] == player or self.row[2] == player and self.row[5] == player and self.row[8] == player or self.row[3] == player and self.row[6] == player and self.row[9] == player or self.row[3] == player and self.row[5] == player and self.row[7] == player:
+            return True
+        else:
+            return False
+    pass
+
+class Board:
+
+"""
+
+A playing field is being built in this class
+
+"""
+
+    def __init__(self):
+        self.index_cell = cell_data
+
+    def info(self):
+
+        for i in range(3):
+            print('-' * 13)
+            print('|', self.index_cell[1 + (i * 3)], '|', self.index_cell[2 + (i * 3)], '|', self.index_cell[3 + (i * 3)], '|')
+
+        print('-' * 13)
+
+class Player:
+"""
+
+This is the player class, the player's turn is passed here and the output is made at the end
+
+"""
+
+    def __init__(self, motion):
+        self.motion = motion
+
+    def __str__(self):
+        return self.motion
+
+class Game:
+"""
+
+This is a class of the game, in this class an empty cell is checked and changed for a certain player's turn
+
+Args:
+    first_player - cross move
+    second_player - zero move
+    board - playing field
+
+"""
+
+    def __init__(self):
+        self.first_player = Player('X')
+        self.second_player = Player('O')
+        self.board = Board()
+        self.cell = Cell()
+
+    def info(self):
+        self.board.info()
+
+    def change_turn(self, player):
+        if player is self.first_player:
+            return self.second_player
+        else:
+            return self.first_player
+
+    def winner_player(self, player):
+        return self.cell.combination(player)
+
+    def modify_board(self, position, motion):
+        if self.cell.change_board(position, motion) is not None:
+            return self.cell.change_board(position, motion)
+        else:
+            position = input('Нет доступных ходов, попробуйте еще раз ')
+            return self.cell.change_board(position, motion)
+
+    pass
+
+def play():
+    tic_tac_toe = Game()
+    player = tic_tac_toe.first_player
+    number = 9
+    while number > 0:
+        tic_tac_toe.info()
+        number -= 1
+        position = input('Игрок {} ходит, куда хотите сходить '.format(player))
+        tic_tac_toe.modify_board(position, player)
+        if tic_tac_toe.winner_player(player):
+            tic_tac_toe.info()
+            print("{} Победитель!".format(player))
+            break
+        else:
+            player = tic_tac_toe.change_turn(player)
+    if number == 0:
+        tic_tac_toe.info()
+        print("Игра окончена")
+
+play()
